@@ -15,7 +15,7 @@ pipenv install
 Generate data fake:
 
 ```
-py generator.py > result\load.sql
+pipenv run py generator.py > result/load.sql
 ```
 
 Load data ke MariaDB:
