@@ -1,8 +1,10 @@
+from typing import Any, Iterable
+
 import csv
 import datetime
 from enum import Enum
-from typing import Any, Iterable
 from os import path
+
 from faker import Faker
 from faker.providers import company, phone_number, person, misc, date_time
 
@@ -52,7 +54,7 @@ def rowify(*row: Iterable[Any]) -> str:
 
 def get_loader(tbl: str, cols: Iterable[str]) -> str:
     qchar = quote_char.replace('\'', '\\\'')
-    fname = path.join(output_dir, tbl + '.csv')
+    fname = path.abspath(path.join(output_dir, tbl + '.csv'))
     colnames = ', '.join(cols)
     return (
         f"LOAD DATA INFILE '{fname}'\n" +
