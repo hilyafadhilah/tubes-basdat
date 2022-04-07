@@ -358,19 +358,20 @@ with open_write('disuntik') as f:
         bs = fake.random_elements(batches, length=len(VaxStage), unique=True)
         bs.sort(key=lambda x: x[1])
 
-        i = 0
-        for s in VaxStage:
-            f.write(rowify(
-                bs[i][0],
-                quote(nik),
-                VaxStage[s.name].value,
-                quote(fake.date_between(
-                    start_date=bs[i][1], end_date=bs[i][2]))
-            ))
+        if stat != VaxStatus.YET:
+            i = 0
+            for s in VaxStage:
+                f.write(rowify(
+                    bs[i][0],
+                    quote(nik),
+                    VaxStage[s.name].value,
+                    quote(fake.date_between(
+                        start_date=bs[i][1], end_date=bs[i][2]))
+                ))
 
-            if s.name == stat.name:
-                break
+                if s.name == stat.name:
+                    break
 
-            i += 1
+                i += 1
 
 print(get_loader('disuntik', cols))
