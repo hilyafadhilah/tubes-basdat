@@ -87,6 +87,16 @@ with open(path.join(output_dir, 'kota.csv'), 'w') as f:
         ))
 print(get_loader('kota', cols))
 
+# penyakit
+cols = ['id', 'nama']
+conds = load_csv(path.join(input_dir, 'penyakit.csv'))
+with open(path.join(output_dir, 'penyakit.csv'), 'w') as f:
+    f.write(rowify(cols))
+    for i in range(len(conds)):
+        conds[i]['id'] = i + 1
+        f.write(rowify(conds[i]['id'], conds['i']['name']))
+print(get_loader('penyakit', cols))
+
 # faker
 fake = Faker('id_ID')
 fake.add_provider(person)
