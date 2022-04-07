@@ -60,16 +60,15 @@ def rowify(*row: Iterable[Any]) -> str:
 def get_loader(tbl: str, cols: Iterable[str]) -> str:
     fname = path.join(output_dir, tbl + '.csv').replace('\\', '\\\\')
     colnames = ', '.join(cols)
-
-    qchar = quote_char.replace('\\', '\\\\').replace('\'', '\\\'')
-    eschar = esc_char.replace('\\', '\\\\').replace('\'', '\\\'')
     nlhex = newline.encode('utf-8').hex()
+
+    def esc(x): return x.replace('\\', '\\\\').replace('\'', '\\\'')
 
     return (
         f"LOAD DATA LOCAL INFILE '{fname}'\n" +
         f"INTO TABLE {tbl}\n" +
-        f"FIELDS TERMINATED BY '{delim}'\n" +
-        f"OPTIONALLY ENCLOSED BY '{qchar}' ESCAPED BY '{eschar}'\n" +
+        f"FIELDS TERMINATED BY '{esc(delim)}'\n" +
+        f"OPTIONALLY ENCLOSED BY '{esc(quote_char)}' ESCAPED BY '{esc(esc_char)}'\n" +
         f"LINES TERMINATED BY 0x{nlhex}\n" +
         f"IGNORE 1 LINES\n" +
         f"({colnames});\n"
