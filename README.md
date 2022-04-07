@@ -12,9 +12,19 @@ pipenv install
 
 ## Usage
 
+Generate data fake:
+
 ```
-py generator.py > result\source.sql
-mysql -h host -u username -p dbname < result\source.sql
+py generator.py > result\load.sql
+```
+
+Load data ke MariaDB:
+
+```sql
+CREATE DATABASE vaksin;
+USE vaksin;
+SOURCE schema.sql;
+SOURCE result/load.sql;
 ```
 
 ## Reference
