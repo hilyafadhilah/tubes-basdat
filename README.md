@@ -29,7 +29,7 @@ SOURCE result/load.sql;
 
 ## Reference
 
-[Provinsi dan Kota](https://sugismart.blogspot.com/2019/12/data-sql-dan-excel-daftar-kota-dan.html)
-[Vaksin](https://en.wikipedia.org/wiki/List_of_COVID-19_vaccine_authorizations)
-[Pekerjaan](https://dindukcapil.rembangkab.go.id/data/pekerjaan)
-[Penyakit](https://www.nhsinform.scot/illnesses-and-conditions/a-to-z)
+- [Provinsi dan Kota](https://sugismart.blogspot.com/2019/12/data-sql-dan-excel-daftar-kota-dan.html)
+- [Vaksin](https://en.wikipedia.org/wiki/List_of_COVID-19_vaccine_authorizations)
+- [Pekerjaan](https://dindukcapil.rembangkab.go.id/data/pekerjaan)
+- [Penyakit](https://www.nhsinform.scot/illnesses-and-conditions/a-to-z)
