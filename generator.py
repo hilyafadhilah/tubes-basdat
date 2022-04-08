@@ -88,9 +88,9 @@ with open_write('Kabupaten_Kota.csv') as f:
     for c in cities:
         name = quote(c['type'] + ' ' + c['city_name'])
         f.write(rowify(
-            c['province_id'],
             c['city_id'],
-            quote(name)
+            c['province_id'],
+            name
         ))
 print(get_loader('Kabupaten_Kota', cols))
 

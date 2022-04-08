@@ -24,7 +24,9 @@ Load data ke MariaDB:
 CREATE DATABASE vaksin;
 USE vaksin;
 SOURCE schema.sql;
+SET FOREIGN_KEY_CHECKS = 0;
 SOURCE result/load.sql;
+SET FOREIGN_KEY_CHECKS = 1;
 ```
 
 ## Reference
