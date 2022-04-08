@@ -4,20 +4,22 @@ import csv
 import datetime
 from enum import Enum
 from os import path
+import codecs
 
 from faker import Faker
 from faker.providers import company, phone_number, person, misc, date_time
 
 
-def load_csv(fname: str) -> list[dict[str]]:
-    """Load CSV file into list of dictionary
+input_dir = 'data'
+output_dir = 'result'
+delim = ','
+quote_char = '"'
+esc_char = '\\'
+newline = '\n'
 
-    Parameters
-    ----------
-    fname : str
-        CSV file path
-    """
-    with open(fname, newline='') as f:
+
+def load_csv(fname: str) -> list[dict[str]]:
+    with open(path.join(input_dir, fname), newline='') as f:
         reader = csv.reader(f, delimiter=';')
         header: list[str] = next(reader)
 
@@ -31,16 +33,8 @@ def load_csv(fname: str) -> list[dict[str]]:
         return rows
 
 
-input_dir = 'data'
-output_dir = 'result'
-delim = ','
-quote_char = '"'
-esc_char = '\\'
-newline = '\n'
-
-
-def open_write(tbl: str) -> TextIO:
-    return open(path.join(output_dir, tbl + '.csv'), 'w', newline=newline)
+def open_write(fname: str) -> TextIO:
+    return codecs.open(path.join(output_dir, fname), 'w', 'utf-8')
 
 
 def quote(el: Any) -> str:
@@ -54,7 +48,7 @@ def rowify(*row: Iterable[Any]) -> str:
             row = iter(row[0])
         except TypeError:
             pass
-    return delim.join(map(str, row)) + '\n'
+    return delim.join(map(str, row)) + newline
 
 
 def get_loader(tbl: str, cols: Iterable[str]) -> str:
@@ -77,8 +71,8 @@ def get_loader(tbl: str, cols: Iterable[str]) -> str:
 
 # provinsi
 cols = ['id', 'nama']
-provinces = load_csv(path.join(input_dir, 'provinsi.csv'))
-with open_write('provinsi') as f:
+provinces = load_csv('provinsi.csv')
+with open_write('provinsi.csv') as f:
     f.write(rowify(cols))
     for p in provinces:
         f.write(rowify((p['id'], quote(p['provinsi']))))
@@ -86,8 +80,8 @@ print(get_loader('provinsi', cols))
 
 # kota
 cols = ['id', 'id_provinsi', 'nama']
-cities = load_csv(path.join(input_dir, 'kota.csv'))
-with open_write('kota') as f:
+cities = load_csv('kota.csv')
+with open_write('kota.csv') as f:
     f.write(rowify(cols))
     for c in cities:
         name = quote(c['type'] + ' ' + c['city_name'])
@@ -100,8 +94,8 @@ print(get_loader('kota', cols))
 
 # penyakit
 cols = ['id', 'nama']
-conds = load_csv(path.join(input_dir, 'penyakit.csv'))
-with open_write('penyakit') as f:
+conds = load_csv('penyakit.csv')
+with open_write('penyakit.csv') as f:
     f.write(rowify(cols))
     for i in range(len(conds)):
         conds[i]['id'] = i + 1
@@ -117,7 +111,7 @@ fake.add_provider(phone_number)
 fake.add_provider(misc)
 
 # pekerjaan (sesuai KTP)
-pekerjaan = load_csv(path.join(input_dir, 'pekerjaan.csv'))
+pekerjaan = load_csv('pekerjaan.csv')
 
 # penduduk
 
@@ -145,7 +139,7 @@ cols = ['nik', 'nama_depan', 'nama_belakang', 'no_telp', 'jenis_kelamin',
         'pekerjaan', 'kategori', 'status_vaksinasi', 'tanggal_lahir']
 
 citizen = []
-with open_write('penduduk') as f:
+with open_write('penduduk.csv') as f:
     f.write(rowify(cols))
     for _ in range(9999):
         nik = fake.random_int(1, 9999999999999999)
@@ -227,7 +221,7 @@ for c in cities:
         i += 1
 
 cols = ['id', 'nama', 'kapasitas', 'id_kota']
-with open_write('faskes') as f:
+with open_write('faskes.csv') as f:
     f.write(rowify(cols))
     for fas in faskes:
         f.write(rowify(
@@ -239,28 +233,28 @@ with open_write('faskes') as f:
 print(get_loader('faskes', cols))
 
 cols = ['id', 'no_telp']
-with open_write('faskes_telp') as f:
+with open_write('faskes_telp.csv') as f:
     f.write(rowify(cols))
     for t in faskes_telp:
         f.write(rowify(t[0], quote(t[1])))
 print(get_loader('faskes_telp', cols))
 
 cols = ['id', 'rawat_inap']
-with open_write('puskesmas') as f:
+with open_write('puskesmas.csv') as f:
     f.write(rowify(cols))
     for p in puskesmas:
         f.write(rowify(p[0], quote(p[1])))
 print(get_loader('puskesmas', cols))
 
 cols = ['id', 'kepemilikan', 'kelas_rs']
-with open_write('rumah_sakit') as f:
+with open_write('rumah_sakit.csv') as f:
     f.write(rowify(cols))
     for r in rs:
         f.write(rowify(r[0], quote(r[1]), r[2]))
 print(get_loader('rumah_sakit', cols))
 
 cols = ['id', 'kelas_klinik']
-with open_write('klinik') as f:
+with open_write('klinik.csv') as f:
     f.write('id,kelas_klinik\n')
     for k in klinik:
         f.write(rowify(k[0], quote(k[1])))
@@ -269,8 +263,8 @@ print(get_loader('klinik', cols))
 # vaksin
 
 cols = ['id', 'produsen', 'nama']
-vaksin = load_csv(path.join(input_dir, 'vaksin.csv'))
-with open_write('vaksin') as f:
+vaksin = load_csv('vaksin.csv')
+with open_write('vaksin.csv') as f:
     f.write(rowify(cols))
     for i in range(len(vaksin)):
         vaksin[i]['id'] = i + 1
@@ -293,8 +287,8 @@ class LogStatus (Enum):
 start = datetime.datetime(2020, 7, 1)
 end = datetime.datetime.now() + datetime.timedelta(6 * 30)
 
-fb = open_write('batch')
-fl = open_write('batch_log')
+fb = open_write('batch.csv')
+fl = open_write('batch_log.csv')
 
 batches = []
 
@@ -352,7 +346,7 @@ class VaxStage (Enum):
 
 
 cols = ['id', 'nik', 'tahap_vaksin', 'tanggal_vaksinasi']
-with open_write('disuntik') as f:
+with open_write('disuntik.csv') as f:
     f.write(rowify(cols))
     for nik, stat in citizen:
         bs = fake.random_elements(batches, length=len(VaxStage), unique=True)
