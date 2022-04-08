@@ -70,27 +70,29 @@ def get_loader(tbl: str, cols: Iterable[str]) -> str:
 
 
 # provinsi
+
 cols = ['id', 'nama']
-provinces = load_csv('provinsi.csv')
+provinces = load_csv('Provinsi.csv')
 with open_write('provinsi.csv') as f:
     f.write(rowify(cols))
     for p in provinces:
         f.write(rowify((p['id'], quote(p['provinsi']))))
-print(get_loader('provinsi', cols))
+print(get_loader('Provinsi', cols))
 
 # kota
+
 cols = ['id', 'id_provinsi', 'nama']
 cities = load_csv('kota.csv')
-with open_write('kota.csv') as f:
+with open_write('Kabupaten_Kota.csv') as f:
     f.write(rowify(cols))
     for c in cities:
         name = quote(c['type'] + ' ' + c['city_name'])
         f.write(rowify(
             c['province_id'],
             c['city_id'],
-            name
+            quote(name)
         ))
-print(get_loader('kota', cols))
+print(get_loader('Kabupaten_Kota', cols))
 
 # penyakit
 
@@ -208,20 +210,20 @@ for c in cities:
             capacity = fake.random_int(100, 1000)
             puskesmas.append((
                 i,
-                fake.boolean()
+                fake.random_element(['Tersedia', 'Tidak Tersedia'])
             ))
         elif type == FaskesType.RUMAH_SAKIT:
             capacity = fake.random_int(1000, 10000)
             rs.append((
                 i,
-                fake.random_element(['swasta', 'negri']),
+                fake.random_element(['Swasta', 'Negri']),
                 fake.random_int(1, 10)
             ))
         elif type == FaskesType.KLINIK:
             capacity = fake.random_int(1000, 5000)
             klinik.append((
                 i,
-                fake.random_element(['pratama', 'utama'])
+                fake.random_element(['Pratama', 'Utama'])
             ))
 
         faskes.append((
@@ -232,13 +234,14 @@ for c in cities:
         ))
 
         faskes_telp.extend([
-            (i, fake.phone_number()) for _ in range(fake.random_int(1, 5))
+            (i, '08' + fake.msisdn()[2:13])
+            for _ in range(fake.random_int(1, 5))
         ])
 
         i += 1
 
-cols = ['id', 'nama', 'kapasitas', 'id_kota']
-with open_write('faskes.csv') as f:
+cols = ['id', 'nama', 'kapasitas_vaksin', 'id_kota']
+with open_write('Faskes.csv') as f:
     f.write(rowify(cols))
     for fas in faskes:
         f.write(rowify(
@@ -247,35 +250,35 @@ with open_write('faskes.csv') as f:
             fas[2],
             fas[3]
         ))
-print(get_loader('faskes', cols))
+print(get_loader('Faskes', cols))
 
 cols = ['id', 'no_telp']
-with open_write('faskes_telp.csv') as f:
+with open_write('Faskes_No_Telp.csv') as f:
     f.write(rowify(cols))
     for t in faskes_telp:
         f.write(rowify(t[0], quote(t[1])))
-print(get_loader('faskes_telp', cols))
+print(get_loader('Faskes_No_Telp', cols))
 
 cols = ['id', 'rawat_inap']
-with open_write('puskesmas.csv') as f:
+with open_write('Puskesmas.csv') as f:
     f.write(rowify(cols))
     for p in puskesmas:
         f.write(rowify(p[0], quote(p[1])))
-print(get_loader('puskesmas', cols))
+print(get_loader('Puskesmas', cols))
 
 cols = ['id', 'kepemilikan', 'kelas_rs']
-with open_write('rumah_sakit.csv') as f:
+with open_write('Rumah_Sakit.csv') as f:
     f.write(rowify(cols))
     for r in rs:
         f.write(rowify(r[0], quote(r[1]), r[2]))
-print(get_loader('rumah_sakit', cols))
+print(get_loader('Rumah_Sakit', cols))
 
 cols = ['id', 'kelas_klinik']
-with open_write('klinik.csv') as f:
-    f.write('id,kelas_klinik\n')
+with open_write('Klinik.csv') as f:
+    f.write(rowify(cols))
     for k in klinik:
         f.write(rowify(k[0], quote(k[1])))
-print(get_loader('klinik', cols))
+print(get_loader('Klinik', cols))
 
 # vaksin
 
@@ -287,10 +290,10 @@ with open_write('Vaksin.csv') as f:
         vaksin[i]['id'] = i + 1
         f.write(rowify(
             vaksin[i]['id'],
-            vaksin[i]['developer'],
-            vaksin[i]['nama']
+            quote(vaksin[i]['developer']),
+            quote(vaksin[i]['nama'])
         ))
-print(get_loader('vaksin', cols))
+print(get_loader('Vaksin', cols))
 
 # batasan vaksin
 
@@ -320,8 +323,18 @@ class LogStatus (Enum):
 start = datetime.datetime(2020, 7, 1)
 end = datetime.datetime.now() + datetime.timedelta(6 * 30)
 
-fb = open_write('batch.csv')
-fl = open_write('batch_log.csv')
+fb = open_write('Batch.csv')
+cols = ['id', 'jumlah_vaksin', 'vaksin_terpakai',
+        'expired_date', 'id_faskes', 'id_vaksin']
+
+fb.write(rowify(cols))
+print(get_loader('Batch', cols))
+
+fl = open_write('Log.csv')
+cols = ['id', 'timestamp', 'status']
+
+fl.write(rowify(cols))
+print(get_loader('Log', cols))
 
 batches = []
 
@@ -348,7 +361,7 @@ for fas in faskes:
                 if not fake.boolean():
                     break
 
-                t1 = fake.date_between(start_date=t1, end_date=t2)
+                t1 = fake.date_time_between(start_date=t1, end_date=t2)
                 fl.write(rowify(
                     i, quote(t1), quote(s.value)
                 ))
@@ -379,7 +392,7 @@ class VaxStage (Enum):
 
 
 cols = ['id', 'nik', 'tahap_vaksin', 'tanggal_vaksinasi']
-with open_write('disuntik.csv') as f:
+with open_write('Disuntik.csv') as f:
     f.write(rowify(cols))
     for nik, stat in citizen:
         bs = fake.random_elements(batches, length=len(VaxStage), unique=True)
@@ -401,4 +414,4 @@ with open_write('disuntik.csv') as f:
 
                 i += 1
 
-print(get_loader('disuntik', cols))
+print(get_loader('Disuntik', cols))
