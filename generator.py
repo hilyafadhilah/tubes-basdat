@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 from typing import Any, Iterable, TextIO
 
 import csv
@@ -95,14 +93,15 @@ with open_write('kota.csv') as f:
 print(get_loader('kota', cols))
 
 # penyakit
+
 cols = ['id', 'nama']
 conds = load_csv('penyakit.csv')
-with open_write('penyakit.csv') as f:
+with open_write('Penyakit.csv') as f:
     f.write(rowify(cols))
     for i in range(len(conds)):
         conds[i]['id'] = i + 1
         f.write(rowify(conds[i]['id'], quote(conds[i]['name'])))
-print(get_loader('penyakit', cols))
+print(get_loader('Penyakit', cols))
 
 # faker
 fake = Faker('id_ID')
@@ -141,7 +140,7 @@ cols = ['nik', 'nama_depan', 'nama_belakang', 'no_telp', 'jenis_kelamin',
         'pekerjaan', 'kategori', 'status_vaksinasi', 'tanggal_lahir']
 
 citizen = []
-with open_write('penduduk.csv') as f:
+with open_write('Penduduk.csv') as f:
     f.write(rowify(cols))
     for _ in range(9999):
         nik = fake.random_int(1, 9999999999999999)
@@ -167,7 +166,23 @@ with open_write('penduduk.csv') as f:
         ])))
 
         citizen.append((nik, stat))
-print(get_loader('penduduk', cols))
+print(get_loader('Penduduk', cols))
+
+# penyakit penduduk
+
+cols = ['nik', 'id_penyakit']
+with open_write('Penyakit_Penduduk.csv') as f:
+    f.write(rowify(cols))
+    for nik, _ in citizen:
+        pconds = fake.random_elements(
+            conds,
+            length=fake.random_int(0, 15),
+            unique=True
+        )
+
+        for c in pconds:
+            f.write(rowify(nik, c['id']))
+print(get_loader('Penyakit_Penduduk', cols))
 
 # faskes
 
@@ -266,7 +281,7 @@ print(get_loader('klinik', cols))
 
 cols = ['id', 'produsen', 'nama']
 vaksin = load_csv('vaksin.csv')
-with open_write('vaksin.csv') as f:
+with open_write('Vaksin.csv') as f:
     f.write(rowify(cols))
     for i in range(len(vaksin)):
         vaksin[i]['id'] = i + 1
@@ -276,6 +291,22 @@ with open_write('vaksin.csv') as f:
             vaksin[i]['nama']
         ))
 print(get_loader('vaksin', cols))
+
+# batasan vaksin
+
+cols = ['id', 'id_penyakit']
+with open_write('Batasan_Vaksin.csv') as f:
+    f.write(rowify(cols))
+    for v in vaksin:
+        vconds = fake.random_elements(
+            conds,
+            length=fake.random_int(5, 20),
+            unique=True
+        )
+
+        for c in vconds:
+            f.write(rowify(v['id'], c['id']))
+print(get_loader('Batasan_Vaksin', cols))
 
 # batch
 

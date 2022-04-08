@@ -1,10 +1,10 @@
-CREATE TABLE Penyakit(
+CREATE TABLE Penyakit (
     id int,
     nama varchar(255) unique not null,
     primary key(id)
 );
 
-CREATE TABLE Penduduk(
+CREATE TABLE Penduduk (
     nik int,
     nama_depan varchar(255) not null,
     nama_belakang varchar(255) not null,
@@ -17,20 +17,20 @@ CREATE TABLE Penduduk(
     primary key(nik)
 );
 
-CREATE TABLE Penyakit_Penduduk(
+CREATE TABLE Penyakit_Penduduk (
     nik int not null,
     id_penyakit int,
     primary key(nik, id_penyakit),
     foreign key(nik) references Penduduk(nik)
 );
 
-CREATE TABLE Provinsi(
+CREATE TABLE Provinsi (
     id int auto_increment,
     nama varchar(255) not null,
     primary key(id)
 );
 
-CREATE TABLE Kabupaten_Kota(
+CREATE TABLE Kabupaten_Kota (
     id int unique not null,
     id_provinsi int auto_increment,
     nama varchar(255) not null,
@@ -38,7 +38,7 @@ CREATE TABLE Kabupaten_Kota(
     foreign key(id_provinsi) references Provinsi(id)
 );
 
-CREATE TABLE Faskes(
+CREATE TABLE Faskes (
     id int auto_increment,
     id_kota int not null,
     nama varchar(255) not null,
@@ -47,14 +47,14 @@ CREATE TABLE Faskes(
     foreign key(id_kota) references Kabupaten_Kota(id)
 );
 
-CREATE TABLE Puskesmas(
+CREATE TABLE Puskesmas (
     id int,
     rawat_inap varchar(15) not null,
     primary key(id),
     foreign key(id) references Faskes(id)
 );
 
-CREATE TABLE Rumah_Sakit(
+CREATE TABLE Rumah_Sakit (
     id int,
     kepemilikan varchar(15) not null,
     kelas_rs int not null,
@@ -62,35 +62,35 @@ CREATE TABLE Rumah_Sakit(
     foreign key(id) references Faskes(id)
 );
 
-CREATE TABLE Klinik(
+CREATE TABLE Klinik (
     id int,
     kelas_klinik varchar(15) not null,
     primary key(id),
     foreign key(id) references Faskes(id)
 );
 
-CREATE TABLE Faskes_No_Telp(
+CREATE TABLE Faskes_No_Telp (
     id int auto_increment,
     no_telp varchar(15) not null,
     primary key(id, no_telp),
     foreign key(id) references Faskes(id)
 );
 
-CREATE TABLE Vaksin(
+CREATE TABLE Vaksin (
     id int auto_increment,
     produsen varchar(255) not null,
     nama varchar(255) unique not null,
     primary key(id)
 );
 
-CREATE TABLE Batasan_Vaksin(
+CREATE TABLE Batasan_Vaksin (
     id int,
     id_penyakit int,
     primary key(id, id_penyakit),
     foreign key(id) references Vaksin(id)
 );
 
-CREATE TABLE Batch(
+CREATE TABLE Batch (
     id int auto_increment,
     jumlah_vaksin int not null,
     vaksin_terpakai int not null,
@@ -102,7 +102,7 @@ CREATE TABLE Batch(
     foreign key(id_vaksin) references Vaksin(id)
 );
 
-CREATE TABLE Log(
+CREATE TABLE Log (
     id int,
     timestamp timestamp not null,
     status varchar(255) not null,
@@ -110,7 +110,7 @@ CREATE TABLE Log(
     foreign key(id) references Batch(id)
 );
 
-CREATE TABLE Disuntik(
+CREATE TABLE Disuntik (
     id int not null,
     nik int,
     tahap_vaksin int,
