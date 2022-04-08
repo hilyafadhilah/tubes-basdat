@@ -73,7 +73,7 @@ def get_loader(tbl: str, cols: Iterable[str]) -> str:
 
 cols = ['id', 'nama']
 provinces = load_csv('Provinsi.csv')
-with open_write('provinsi.csv') as f:
+with open_write('Provinsi.csv') as f:
     f.write(rowify(cols))
     for p in provinces:
         f.write(rowify((p['id'], quote(p['provinsi']))))
@@ -144,7 +144,7 @@ cols = ['nik', 'nama_depan', 'nama_belakang', 'no_telp', 'jenis_kelamin',
 citizen = []
 with open_write('Penduduk.csv') as f:
     f.write(rowify(cols))
-    for _ in range(9999):
+    for _ in range(999999):
         nik = fake.random_int(1, 9999999999999999)
         sex = fake.random_element(Sex)
 
@@ -347,8 +347,7 @@ for fas in faskes:
     )
 
     for v in fvax:
-        # for _ in range(fake.random_int(1, 100)):
-        for _ in range(fake.random_int(1, 5)):
+        for _ in range(fake.random_int(1, 25)):
             i += 1
             qty = fake.random_int(100, 5000)
             used = 0
@@ -395,10 +394,11 @@ cols = ['id', 'nik', 'tahap_vaksin', 'tanggal_vaksinasi']
 with open_write('Disuntik.csv') as f:
     f.write(rowify(cols))
     for nik, stat in citizen:
-        bs = fake.random_elements(batches, length=len(VaxStage), unique=True)
-        bs.sort(key=lambda x: x[1])
-
         if stat != VaxStatus.YET:
+            bs = fake.random_elements(
+                batches, length=len(VaxStage), unique=True)
+            bs.sort(key=lambda x: x[1])
+
             i = 0
             for s in VaxStage:
                 f.write(rowify(
